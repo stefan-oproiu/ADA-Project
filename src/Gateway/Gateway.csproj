@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ocelot" Version="15.0.7" />
   </ItemGroup>
 
 </Project>

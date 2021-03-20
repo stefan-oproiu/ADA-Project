@@ -1,0 +1,32 @@
+{
+  "ReRoutes": [
+    {
+      "DownstreamPathTemplate": "/api/banking/{anything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "banking",
+          "Port": 3000
+        }
+      ],
+      "UpstreamPathTemplate": "/api/banking/{anything}",
+      "UpstreamHttpMethod": [ ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/real-time/{anything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "real-time",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate": "/api/real-time/{anything}",
+      "UpstreamHttpMethod": [ ]
+    }
+
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5002"
+  }
+}

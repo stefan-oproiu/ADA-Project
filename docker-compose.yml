@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  gateway:
+    build:
+      context: ./src/Gateway
+    ports:
+      - "5002:5002"
+    networks:
+      - gateway-network
+
+  real-time:
+    build:
+      context: ./src/RealTime
+    ports:
+      - "5001"
+    networks:
+      - gateway-network
+  
+  banking:
+    build:
+      context: ./src/banking-server
+    ports:
+      - "3000"
+    networks:
+      - gateway-network
+
+networks:
+  gateway-network: 
+    driver: bridge
