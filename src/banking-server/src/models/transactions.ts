@@ -1,5 +1,5 @@
 export interface Transaction {
-    id: number;
+    id: String;
     sourceId: String;
     targetId: String;
     date: Date;
