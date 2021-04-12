@@ -17,7 +17,6 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     ToastrModule.forRoot(),
     BrowserAnimationsModule,
-    NoopAnimationsModule
   ],
   providers: [
       ToastrService
