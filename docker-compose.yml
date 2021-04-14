@@ -25,6 +25,14 @@ services:
     networks:
       - gateway-network
 
+  admin-client:
+    build:
+      context: ./src/admin-client
+    ports:
+      - 4200:80
+    networks:
+      - gateway-network
+
 networks:
   gateway-network: 
     driver: bridge
