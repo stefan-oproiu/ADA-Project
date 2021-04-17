@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {User} from '../dtos/user';
-import {UserService} from '../services/userService';
-import {ToastrService} from 'ngx-toastr';
+import {User} from './dtos/user';
+import {UserService} from './services/userService';
+import {Transaction} from './dtos/transaction';
 
 @Component({
   selector: 'app-root',
@@ -11,11 +11,17 @@ import {ToastrService} from 'ngx-toastr';
 export class AppComponent implements OnInit {
   title = 'admin-client';
 
+  fullNameColumns = ['fullName'];
+
+  transactionColumns = ['sourceFullName', 'arrow', 'targetFullName', 'amount'];
+
   selectedUser?: User;
+
+  selectedUserTransactions: Transaction[] = [];
 
   users: User[] = [];
 
-  constructor(private userService: UserService, private toasterService: ToastrService) { }
+  constructor(private userService: UserService) { }
 
   ngOnInit(): void {
       this.userService.getUsers().subscribe(users => this.users = users);
@@ -23,25 +29,26 @@ export class AppComponent implements OnInit {
 
   onSelect(user: User): void {
       this.selectedUser = user;
+      // @ts-ignore
+      this.selectedUserTransactions = this.selectedUser.transactions;
   }
 
   sendMoney(amount: string): void {
       // @ts-ignore
       const selectedUserId: string = this.selectedUser.id;
-      // @ts-ignore
-      this.userService.sendMoney(selectedUserId, +amount);
-      this.toasterService.info('Money sent', '', {
-          timeOut: 3000,
-      });
-      this.pseudoUpdateSelectedUser(+amount);
-      this.userService.getNewUsers().subscribe(users => {
-          this.users = users;
-          this.selectedUser = this.users.find(user => user.id = selectedUserId);
-      });
+      if (this.userService.sendMoney(selectedUserId, +amount)) {
+          this.pseudoUpdateSelectedUser(+amount);
+          this.userService.getUsers().subscribe(users => {
+              this.users = users;
+              this.selectedUser = this.users.find(user => user.id = selectedUserId);
+              // @ts-ignore
+              this.selectedUserTransactions = this.selectedUser.transactions;
+          });
+      }
   }
 
-  private pseudoUpdateSelectedUser(withdrownMoney: number): void {
+  private pseudoUpdateSelectedUser(withdrawnMoney: number): void {
       // @ts-ignore
-      this.selectedUser.balance += withdrownMoney;
+      this.selectedUser.balance += withdrawnMoney;
   }
 }

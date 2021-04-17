@@ -1,13 +1,12 @@
 <div class="container-fluid">
     <div class="row align-items-center">
         <div class="col-4 align-items-center align-middle">
-            <table class="table table-bordered">
-                <tbody>
-                    <tr *ngFor="let user of users; let i = index" (click)="onSelect(user)">
-                        <td [class.selected]="user === selectedUser">{{user?.fullName}}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <mat-table [dataSource]="users">
+                <ng-container matColumnDef="fullName">
+                    <mat-cell *matCellDef="let user" (click)="onSelect(user)">{{user?.fullName}}</mat-cell>
+                </ng-container>
+                <mat-row *matRowDef="let row; columns: fullNameColumns"></mat-row>
+            </mat-table>
         </div>
         <div *ngIf="selectedUser" class="col ml-3 align-items-center align-middle">
             <div class="row mb-2">
@@ -42,6 +41,11 @@
                 </div>
                 <div class="col-10">
                     <div class="form-inline">
+<!--                        <mat-form-field appearance="outline">-->
+<!--                            <input matInput placeholder="Placeholder" #amount value="0" oninput="this.value=this.value.replace(/(?![0-9])./gmi,'')">-->
+<!--                            <mat-icon matSuffix>attach_money</mat-icon>-->
+<!--                        </mat-form-field>-->
+<!--                        <button mat-stroked-button (click)="sendMoney(amount.value)">Send</button>-->
                         <input #amount type="text" class="form-control" value="0"  oninput="this.value=this.value.replace(/(?![0-9])./gmi,'')"/>
                         <div class="input-group-append">
                             <span class="input-group-text">$</span>
@@ -53,18 +57,23 @@
                 </div>
             </div>
             <div class="row">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">Transactions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let transaction of selectedUser?.transactions">
-                            <td>{{transaction?.sourceFullName}} -> {{transaction?.targetFullName}}  {{transaction.amount}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="col-4 align-items-center align-middle">
+                    <mat-table [dataSource]="selectedUserTransactions">
+                        <ng-container matColumnDef="sourceFullName">
+                            <mat-cell *matCellDef="let transaction">{{transaction?.sourceFullName}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="arrow">
+                            <mat-cell *matCellDef="let transaction">-></mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="targetFullName">
+                            <mat-cell *matCellDef="let transaction">{{transaction?.targetFullName}}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="amount">
+                            <mat-cell *matCellDef="let transaction">{{transaction?.amount}}</mat-cell>
+                        </ng-container>
+                        <mat-row *matRowDef="let row; columns: transactionColumns"></mat-row>
+                    </mat-table>
+                </div>
             </div>
         </div>
     </div>
