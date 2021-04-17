@@ -1,6 +1,35 @@
 version: '2'
 
 services:
+  identity-db:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    ports: 
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Pass@word
+    networks:
+      - identity-network
+    
+  identity-server:
+    build:
+      context: ./src/IdentityServer
+    ports:
+      - "5000:5000"
+    networks:
+      - identity-network
+    depends_on: 
+      - identity-db
+  
+  identity-seeder:
+    build:
+      context: ./src/IdentityServer
+      dockerfile: seed.dockerfile
+    networks:
+      - identity-network
+    depends_on: 
+      - identity-db
+
   gateway:
     build:
       context: ./src/Gateway
@@ -35,4 +64,6 @@ services:
 
 networks:
   gateway-network: 
+    driver: bridge
+  identity-network:
     driver: bridge
