@@ -37,6 +37,9 @@ services:
       - "5002:5002"
     networks:
       - gateway-network
+    depends_on:
+      - banking
+      - real-time
 
   real-time:
     build:
@@ -45,14 +48,30 @@ services:
       - "5001"
     networks:
       - gateway-network
+
+  banking-db:
+    image: mongo
+    ports:
+      - "27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - banking-network
   
   banking:
     build:
       context: ./src/banking-server
     ports:
       - "3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_CONNECTION_STRING: "mongodb://root:password@banking-db:27017"
+
     networks:
       - gateway-network
+      - banking-network
 
   admin-client:
     build:
@@ -66,4 +85,6 @@ networks:
   gateway-network: 
     driver: bridge
   identity-network:
+    driver: bridge
+  banking-network:
     driver: bridge
