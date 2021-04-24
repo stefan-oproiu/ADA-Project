@@ -1,64 +1,59 @@
-<div class="container-fluid">
-    <div class="row align-items-center">
-        <div class="col-4 align-items-center align-middle">
-            <mat-table [dataSource]="users">
+<div class="container-fluid center mh-100">
+    <div class="row mh-100">
+        <div class="col-4 left mh-100">
+            <mat-table [dataSource]="users" style="max-height: 95vh;">
                 <ng-container matColumnDef="fullName">
                     <mat-cell *matCellDef="let user" (click)="onSelect(user)">{{user?.fullName}}</mat-cell>
                 </ng-container>
                 <mat-row *matRowDef="let row; columns: fullNameColumns"></mat-row>
             </mat-table>
         </div>
-        <div *ngIf="selectedUser" class="col ml-3 align-items-center align-middle">
-            <div class="row mb-2">
-                <div class="col-2">
+        <div *ngIf="selectedUser" class="col ml-3 mt-2 mh-100">
+            <div class="row mb-3">
+                <div class="col-3">
                     <span>
                         Selected user:
                     </span>
                 </div>
-                <div class="col-10">
+                <div class="col-9">
                     <span>
                         {{selectedUser?.fullName}}
                     </span>
                 </div>
             </div>
-            <div class="row mb-2">
-                <div class="col-2">
+            <div class="row">
+                <div class="col-3">
                     <span>
                         Current balance:
                     </span>
                 </div>
-                <div class="col-10">
+                <div class="col-9">
                     <span>
                         {{selectedUser?.balance}}
                     </span>
                 </div>
             </div>
-            <div class="row mb-2">
-                <div class="col-2 caption">
+            <div class="row">
+                <div class="col-3 caption mt-0 pt-0">
                     <span>
                         Send money:
                     </span>
                 </div>
-                <div class="col-10">
+                <div class="col-9">
                     <div class="form-inline">
-<!--                        <mat-form-field appearance="outline">-->
-<!--                            <input matInput placeholder="Placeholder" #amount value="0" oninput="this.value=this.value.replace(/(?![0-9])./gmi,'')">-->
-<!--                            <mat-icon matSuffix>attach_money</mat-icon>-->
-<!--                        </mat-form-field>-->
-<!--                        <button mat-stroked-button (click)="sendMoney(amount.value)">Send</button>-->
-                        <input #amount type="text" class="form-control" value="0"  oninput="this.value=this.value.replace(/(?![0-9])./gmi,'')"/>
-                        <div class="input-group-append">
-                            <span class="input-group-text">$</span>
-                        </div>
-                        <div class="input-group-prepend">
-                            <button class="btn btn-outline-secondary" type="button" (click)="sendMoney(amount.value)">Send</button>
-                        </div>
+                        <mat-form-field appearance="standard" style="max-width: 100px">
+                            <input matInput placeholder="Placeholder" #amount value="0" oninput="this.value=this.value.replace(/(?![0-9])./gmi,'')">
+                            <mat-icon matSuffix style="position: relative; bottom: -5px;">attach_money</mat-icon>
+                        </mat-form-field>
+                        <button mat-icon-button (click)="sendMoney(amount.value)">
+                            <mat-icon>payment</mat-icon>
+                        </button>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-4 align-items-center align-middle">
-                    <mat-table [dataSource]="selectedUserTransactions">
+            <div class="row mt-1 mh-100">
+                <div class="col" style="max-height: 82vh;">
+                    <mat-table [dataSource]="selectedUserTransactions" style="max-height: 100% !important;">
                         <ng-container matColumnDef="sourceFullName">
                             <mat-cell *matCellDef="let transaction">{{transaction?.sourceFullName}}</mat-cell>
                         </ng-container>
