@@ -6,6 +6,6 @@ const router = Router();
 
 router.get('/api/banking/users/full', usersApi.allUsersFull);
 router.get('/api/banking/users', usersApi.allUsers);
-router.post('/api/banking/users/send',verifyToken, usersApi.sendMoneyFromSystem);
-router.post('/api/banking/users/fill', usersApi.sendMoneyFromPayloadUser);
+router.post('/api/banking/users/send',verifyToken, usersApi.sendMoneyFromPayloadUser);
+router.post('/api/banking/users/fill', usersApi.sendMoneyFromSystem);
 export default router;

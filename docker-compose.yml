@@ -37,10 +37,15 @@ services:
       - "5002:5002"
     networks:
       - gateway-network
-    depends_on:
-      - banking
-      - real-time
-
+    
+  rabbitmq:
+    image: 'bitnami/rabbitmq:latest'
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - gateway-network
+      
   real-time:
     build:
       context: ./src/RealTime
