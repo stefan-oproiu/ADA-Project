@@ -13,6 +13,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script>
+    $(document).ready(function(){
+      $('#usersTable').css('max-height', $(window).height() - 40);
+      $("#mainDiv").bind("DOMSubtreeModified", function() {
+        $('#transactionsTable').css('max-height', $(window).height() - $('#selectedUserFullName').height() - $('#selectedCurrentBalance').height() - $('#selectedSendMoney').height() - 60);
+      });
+      $(window).resize(function(){
+        $('#usersTable').css('max-height', $(window).height() - 40);
+        $('#transactionsTable').css('max-height', $(window).height() - $('#selectedUserFullName').height() - $('#selectedCurrentBalance').height() - $('#selectedSendMoney').height() - 60);
+      });
+    });
+  </script>
 </head>
 <body class="mat-typography center">
   <app-root></app-root>

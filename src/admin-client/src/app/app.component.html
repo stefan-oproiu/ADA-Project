@@ -1,15 +1,15 @@
-<div class="container-fluid center mh-100">
-    <div class="row mh-100">
-        <div class="col-4 left mh-100">
-            <mat-table [dataSource]="users" style="max-height: 95vh;">
+<div class="container-fluid center">
+    <div id="mainDiv" class="row">
+        <div class="col-4 left">
+            <mat-table id="usersTable" [dataSource]="users">
                 <ng-container matColumnDef="fullName">
                     <mat-cell *matCellDef="let user" (click)="onSelect(user)">{{user?.fullName}}</mat-cell>
                 </ng-container>
                 <mat-row *matRowDef="let row; columns: fullNameColumns"></mat-row>
             </mat-table>
         </div>
-        <div *ngIf="selectedUser" class="col ml-3 mt-2 mh-100">
-            <div class="row mb-3">
+        <div *ngIf="selectedUser" class="col ml-3 mt-2">
+            <div id="selectedUserFullName" class="row mb-3">
                 <div class="col-3">
                     <span>
                         Selected user:
@@ -21,7 +21,7 @@
                     </span>
                 </div>
             </div>
-            <div class="row">
+            <div id="selectedCurrentBalance" class="row">
                 <div class="col-3">
                     <span>
                         Current balance:
@@ -33,7 +33,7 @@
                     </span>
                 </div>
             </div>
-            <div class="row">
+            <div id="selectedSendMoney" class="row">
                 <div class="col-3 caption mt-0 pt-0">
                     <span>
                         Send money:
@@ -51,9 +51,9 @@
                     </div>
                 </div>
             </div>
-            <div class="row mt-1 mh-100">
-                <div class="col" style="max-height: 82vh;">
-                    <mat-table [dataSource]="selectedUserTransactions" style="max-height: 100% !important;">
+            <div class="row mt-1">
+                <div class="col">
+                    <mat-table id="transactionsTable" [dataSource]="selectedUserTransactions">
                         <ng-container matColumnDef="sourceFullName">
                             <mat-cell *matCellDef="let transaction">{{transaction?.sourceFullName}}</mat-cell>
                         </ng-container>
