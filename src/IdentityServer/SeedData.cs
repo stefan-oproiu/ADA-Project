@@ -22,7 +22,7 @@ namespace IdentityServer
             var services = new ServiceCollection();
             services.AddLogging();
             services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlite(connectionString));
+               options.UseSqlServer(connectionString));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -99,6 +99,39 @@ namespace IdentityServer
                     else
                     {
                         Log.Debug("bob already exists");
+                    }
+
+                    var charlie = userMgr.FindByNameAsync("bob").Result;
+                    if (charlie == null)
+                    {
+                        charlie = new ApplicationUser
+                        {
+                            UserName = "charlie",
+                            Email = "CharlieSmith@email.com",
+                            EmailConfirmed = true
+                        };
+                        var result = userMgr.CreateAsync(charlie, "Pass123$").Result;
+                        if (!result.Succeeded)
+                        {
+                            throw new Exception(result.Errors.First().Description);
+                        }
+
+                        result = userMgr.AddClaimsAsync(charlie, new Claim[]{
+                            new Claim(JwtClaimTypes.Name, "Charlie Smith"),
+                            new Claim(JwtClaimTypes.GivenName, "Charlie"),
+                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
+                            new Claim(JwtClaimTypes.WebSite, "http://charlie.com"),
+                            new Claim("location", "somewhere")
+                        }).Result;
+                        if (!result.Succeeded)
+                        {
+                            throw new Exception(result.Errors.First().Description);
+                        }
+                        Log.Debug("charlie created");
+                    }
+                    else
+                    {
+                        Log.Debug("charlie already exists");
                     }
                 }
             }
