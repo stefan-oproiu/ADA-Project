@@ -42,7 +42,7 @@ export function sendMoneyFromPayloadUser(req: any, res: any, next: any) {
                 res.status(404).json({ mesage: "User from request doesn't exist" })
             }
             else {
-                let payloadData: any = jwt_decode(req.token)
+                let payloadData: any = jwt_decode(req.headers['authorization'].split(' ')[1])
                     if (payloadData == null) {
                         res.status(404).json({message: "Invalid payload secret", err:err })
                     }
@@ -86,7 +86,7 @@ export function sendMoneyFromPayloadUser(req: any, res: any, next: any) {
                                                         let newRecieverBalance =  requestUser[0].balance + transaction.amount;
                                                         let receiverTable = UserTable.findOneAndUpdate({id: req.body.targetId}, {$set: { balance:newRecieverBalance }, $push:{ transactions: transactionTable.id }}, {new: true}, (err, doc) => {
                                                             if (err) {
-                                                                res.status(300).json({message:"Receiver couldn't be updated", err:err});
+                                                                res.status(400).json({message:"Receiver couldn't be updated", err:err});
                                                             }
                                                             else {   
                                                                 let newSenderBalance =  newUser.balance - transaction.amount;

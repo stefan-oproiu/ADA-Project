@@ -1,6 +1,14 @@
 version: '2'
 
 services:
+  rabbit:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - rabbit-network
+
   identity-db:
     image: mcr.microsoft.com/mssql/server:2017-latest
     ports: 
@@ -27,8 +35,11 @@ services:
       dockerfile: seed.dockerfile
     networks:
       - identity-network
+      - rabbit-network
     depends_on: 
       - identity-db
+      - rabbit
+      - banking
 
   gateway:
     build:
@@ -37,14 +48,9 @@ services:
       - "5002:5002"
     networks:
       - gateway-network
-    
-  rabbitmq:
-    image: 'bitnami/rabbitmq:latest'
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    networks:
-      - gateway-network
+    depends_on: 
+      - real-time
+      - banking
       
   real-time:
     build:
@@ -53,11 +59,13 @@ services:
       - "5001"
     networks:
       - gateway-network
+    depends_on:
+      - rabbit
 
   banking-db:
     image: mongo
     ports:
-      - "27017"
+      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
@@ -73,10 +81,16 @@ services:
       NODE_ENV: production
       PORT: 3000
       MONGODB_CONNECTION_STRING: "mongodb://root:password@banking-db:27017"
-
+      RABBITMQ_HOST: "rabbit"
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: "guest"
+      RABBITMQ_PASSWORD: "guest"
     networks:
       - gateway-network
       - banking-network
+    depends_on:
+      - rabbit
+      - banking-db
 
   admin-client:
     build:
@@ -92,4 +106,6 @@ networks:
   identity-network:
     driver: bridge
   banking-network:
+    driver: bridge
+  rabbit-network:
     driver: bridge
