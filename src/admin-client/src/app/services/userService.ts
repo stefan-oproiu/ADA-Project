@@ -11,10 +11,12 @@ import {ToastrService} from 'ngx-toastr';
 })
 export class UserService {
 
+    rootUrl = 'http://localhost:5002';
+
     constructor(private http: HttpClient, private toasterService: ToastrService) { }
 
     getUsers(): Observable<User[]> {
-        return this.http.get<User[]>(URLHelper.GET_FULL_USERS_URL);
+        return this.http.get<User[]>(`${this.rootUrl}${URLHelper.GET_FULL_USERS_URL}`);
     }
 
     sendMoney(targetId: string, amount: number): boolean {
@@ -23,7 +25,7 @@ export class UserService {
             targetId,
             amount
         };
-        this.http.post<SendMoney>(URLHelper.SEND_MONEY_URL, sendMoney)
+        this.http.post<SendMoney>(`${this.rootUrl}${URLHelper.SEND_MONEY_URL}`, sendMoney)
             .subscribe({
                 next: () => {
                     this.toasterService.info('Money sent', '', {

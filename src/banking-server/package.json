@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && node ../dist/index.js",
+    "start": "node dist/index.js",
+    "build": "tsc -p .",
     "run": "node ./dist/index.js",
     "debug": "node --inspect-brk ./dist/index.js",
-    "build": "tsc",
     "serve": "node ./dist/index.js",
     "lint": "standard --verbose | snazzy",
     "lint:fix": "standard  --verbose --fix | snazzy",
@@ -25,10 +25,6 @@
     "babel-cli": "^6.26.0"
   },
   "dependencies": {
-    "@types/body-parser": "^1.19.0",
-    "@types/express": "^4.17.11",
-    "@types/node": "^14.14.35",
-    "babel-cli": "^6.26.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "express-validation": "^3.0.8",
