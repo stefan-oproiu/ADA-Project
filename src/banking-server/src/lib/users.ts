@@ -10,7 +10,7 @@ const randomIdTransaction = require('../utils/generateRandomIdTransaction');
 
 //- GET - //api/banking/users/full # return all users with all transactions
 export let allUsersFull = (req: Request, res: Response) => {
-    let users = UserTable.find({}, '-_id', null, function (err: any, users: any) {
+    let users = UserTable.find({}, '-_id -__v', null, function (err: any, users: any) {
         if (err) {
             res.send(err);
         } else {
@@ -21,7 +21,7 @@ export let allUsersFull = (req: Request, res: Response) => {
 
 //- GET - /api/banking/users # return partial informations about the users
 export let allUsers = (req: Request, res: Response) => {
-    let users = UserTable.find({}, '-_id id name ', null, function (err: any, users: any) {
+    let users = UserTable.find({}, '-_id -balance -__v -transactions', null, function (err: any, users: any) {
         if (err) {
             res.send(err);
         } else {
@@ -184,24 +184,24 @@ export function sendMoneyFromSystem(req: any, res: any, next: any) {
                 targetFullName: requestUser[0].fullName
             }
             sendToRabbitMQ.sendData(transaction)
-             let transactionTable = new TransactionTable(transaction)
-             transactionTable.save((err:any) => {
-                if(err) {
-                    res.status(404).json({message:"Transaction couldn't be saved", err:err});
-                }
-                else {
-                    let newRecieverBalance =  requestUser[0].balance + transaction.amount
-                    let receiver = UserTable.findOneAndUpdate({id: req.body.targetId},  {$set: { balance:newRecieverBalance }, $push:{ transactions: transactionTable.id }}, {new: true}, (err, doc) => {
-                        if (err) {
-                            res.status(300).json({message: "error on receiver", err:err})
-                         }
-                         else {
-                            res.status(200).json({message: "Transaction succed"})
-                         }
-                    })      
-                }
-            })
-        }
-    })
+            let transactionTable = new TransactionTable(transaction)
+            transactionTable.save((err:any) => {
+            if(err) {
+                res.status(404).json({message:"Transaction couldn't be saved", err:err});
+            }
+            else {
+                let newRecieverBalance =  requestUser[0].balance + transaction.amount
+                let receiver = UserTable.findOneAndUpdate({id: req.body.targetId},  {$set: { balance:newRecieverBalance }, $push:{ transactions: transactionTable.id }}, {new: true}, (err, doc) => {
+                    if (err) {
+                        res.status(300).json({message: "error on receiver", err:err})
+                        }
+                        else {
+                        res.status(200).json({message: "Transaction succed"})
+                        }
+                })      
+            }
+        })
+    }
+})
 }
  
