@@ -3,10 +3,11 @@ import bodyParser from 'body-parser';
 import UsersRoutes from './routes/users';
 
 import { mongooseConnection } from './utils/dbconnection';
+import { rabbitMQConnectAndConsumeUsers } from './utils/rabbitMQconnection';
 const config = require('./config');
 
 const app = express();
-
+rabbitMQConnectAndConsumeUsers()
 app.use(bodyParser.json());
 mongooseConnection;
 app.use((req, res, next) => {

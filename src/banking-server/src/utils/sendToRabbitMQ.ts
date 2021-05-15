@@ -1,5 +1,5 @@
 import { Transaction } from '../models/transactions';
-import { rabbitMQConnect} from './rabbitMQconnection';
+import { rabbitMQConnectAndPublishTransactions} from './rabbitMQconnection';
 export function sendData(transaction:Transaction){
-    rabbitMQConnect(transaction)
+    rabbitMQConnectAndPublishTransactions(transaction)
 }
