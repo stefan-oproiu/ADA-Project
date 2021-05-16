@@ -4,7 +4,7 @@ EXPOSE 80
 
 COPY . .
 RUN npm install
-RUN npm run build --prod
+RUN npm run build
 
 FROM nginx:alpine
 COPY --from=node /app/dist/admin-client /usr/share/nginx/html

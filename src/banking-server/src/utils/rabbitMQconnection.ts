@@ -11,7 +11,6 @@ const rabbitMQSettings = {
     port: config.RABBITMQ_PORT,
     username: config.RABBITMQ_USERNAME,
     password: config.RABBITMQ_PASSWORD,
-    vhost:'/',
     authMecanism: ['PLAIN','AMQPLAIN','EXTERNAL']
 }
 
@@ -53,18 +52,19 @@ export function rabbitMQConnectAndConsumeUsers() {
         return result.assertQueue(queue)
     })
     .then((result:any) => {
-        result.consume(queue,(users:User) =>
+        result.consume(queue,(message:any) =>
         {
-            let userTable = new UserTable(users)
+            const user: User = JSON.parse(message.content.toString());
+            let userTable = new UserTable(user)
             userTable.save((err:any) =>{
                 if(err) {{
                     console.log("Error by saving RabbitMqUser")
                 }}
                 else {
-                    console.log("Succeded by savint RabbitMqUser")
+                    console.log("Succeded by saving RabbitMqUser")
                 }
             })
-        })
+        }, {noAck: true})
     })
     .catch((err:any) =>{
         console.log(err)

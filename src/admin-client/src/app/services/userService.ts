@@ -5,18 +5,19 @@ import {SendMoney} from '../dtos/sendMoney';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {URLHelper} from '../helpers/URLHelper';
 import {ToastrService} from 'ngx-toastr';
+import {tap} from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
 })
 export class UserService {
 
-    rootUrl = 'http://localhost:5002';
-
     constructor(private http: HttpClient, private toasterService: ToastrService) { }
 
     getUsers(): Observable<User[]> {
-        return this.http.get<User[]>(`${this.rootUrl}${URLHelper.GET_FULL_USERS_URL}`);
+        return this.http.get<User[]>(`${URLHelper.GET_FULL_USERS_URL}`).pipe(
+            tap(users => users.forEach(u => u.transactions?.sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime())))
+        );
     }
 
     sendMoney(targetId: string, amount: number): boolean {
@@ -25,7 +26,7 @@ export class UserService {
             targetId,
             amount
         };
-        this.http.post<SendMoney>(`${this.rootUrl}${URLHelper.SEND_MONEY_URL}`, sendMoney)
+        this.http.post<SendMoney>(`${URLHelper.SEND_MONEY_URL}`, sendMoney)
             .subscribe({
                 next: () => {
                     this.toasterService.info('Money sent', '', {

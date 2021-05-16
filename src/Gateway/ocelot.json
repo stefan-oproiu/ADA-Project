@@ -10,7 +10,11 @@
         }
       ],
       "UpstreamPathTemplate": "/api/banking/{anything}",
-      "UpstreamHttpMethod": []
+      "UpstreamHttpMethod": [],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": ["admin", "mobile"]
+      }
     },
     {
       "DownstreamPathTemplate": "/api/real-time/{anything}",
@@ -25,27 +29,15 @@
       "UpstreamHttpMethod": []
     },
     {
-      "DownstreamPathTemplate": "/{anything}",
-      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/hub/real-time/{catchAll}",
+      "DownstreamScheme": "ws",
       "DownstreamHostAndPorts": [
         {
-          "Host": "identity-server",
-          "Port": 5000
+          "Host": "real-time",
+          "Port": 5001
         }
       ],
-      "UpstreamPathTemplate": "/auth/{anything}",
-      "UpstreamHttpMethod": []
-    },
-    {
-      "DownstreamPathTemplate": "/{anything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "admin-client",
-          "Port": 80
-        }
-      ],
-      "UpstreamPathTemplate": "/admin/{anything}",
+      "UpstreamPathTemplate": "/hub/real-time/{catchAll}",
       "UpstreamHttpMethod": []
     }
   ],

@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.CookiePolicy;
 
 namespace IdentityServer
 {
@@ -32,8 +33,9 @@ namespace IdentityServer
         {
             services.AddControllersWithViews();
 
-            services.Configure<CookiePolicyOptions>(options => {
-                 options.MinimumSameSitePolicy = (SameSiteMode) (-1);
+            services.ConfigureApplicationCookie(options => {
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>

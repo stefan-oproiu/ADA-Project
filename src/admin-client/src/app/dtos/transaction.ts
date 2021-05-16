@@ -1,7 +1,7 @@
 export interface Transaction {
     id: number;
     sourceId: string;
-    targetID: string;
+    targetId: string;
     date: Date;
     amount: number;
     sourceFullName: string;

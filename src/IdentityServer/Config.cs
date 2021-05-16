@@ -61,10 +61,29 @@ namespace IdentityServer
                     ClientName = "Admin Client",
                     AllowedGrantTypes = GrantTypes.Code,
                     RequireClientSecret = false,
+                    RequireConsent = false,
+                    AccessTokenLifetime = 600,
+                    RequirePkce = true,
 
-                    RedirectUris =           { "http://localhost:4200/callback" },
-                    PostLogoutRedirectUris = { "http://localhost:4200" },
-                    AllowedCorsOrigins =     { "http://localhost:4200" },
+                    RedirectUris = new List<string> { 
+                        "http://192.168.100.8:4200/signin-callback",
+                        "https://192.168.100.8:4200/signin-callback",
+                        "http://localhost:4200/signin-callback",
+                        "https://localhost:4200/signin-callback",
+                    },
+                    PostLogoutRedirectUris = new List<string> { 
+                        "http://192.168.100.8:4200/logout-callback",
+                        "https://192.168.100.8:4200/logout-callback",
+                        "http://localhost:4200/logout-callback",
+                        "https://localhost:4200/logout-callback"
+                    },
+                    AllowedCorsOrigins = new List<string> { 
+                        "http://192.168.100.8:4200",
+                        "http://192.168.100.8:5000",
+                        "https://192.168.100.8:4200",
+                        "http://localhost:4200",
+                        "https://localhost:4200"
+                    },
 
                     AllowedScopes =
                     {

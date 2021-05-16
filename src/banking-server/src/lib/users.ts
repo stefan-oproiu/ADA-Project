@@ -14,7 +14,13 @@ export let allUsersFull = (req: Request, res: Response) => {
         if (err) {
             res.send(err);
         } else {
-            res.send(users);
+            TransactionTable.find({}, (err, transactions) => {
+                users.forEach((u: any) => {
+                    u.transactions = transactions.filter(t => u.transactions.includes(t.id));
+                });
+                
+                res.send(users);
+            });
         }
     })
 }
