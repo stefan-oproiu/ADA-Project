@@ -56,9 +56,10 @@ services:
     build:
       context: ./src/RealTime
     ports:
-      - "5001"
+      - "5001:5001"
     networks:
       - gateway-network
+      - rabbit-network
     depends_on:
       - rabbit
 
@@ -88,6 +89,7 @@ services:
     networks:
       - gateway-network
       - banking-network
+      - rabbit-network
     depends_on:
       - rabbit
       - banking-db
