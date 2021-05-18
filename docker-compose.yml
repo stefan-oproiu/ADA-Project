@@ -93,13 +93,27 @@ services:
     depends_on:
       - rabbit
       - banking-db
-
+  
   admin-client:
     build:
       context: ./src/admin-client
     ports:
       - 4200:80
+    environment: 
+      base: "http://localhost"
+      client: "http://localhost:4200"
     networks:
+      - gateway-network
+
+  user-client:
+    build:
+      context: ./src/user-client
+    ports:
+      - 4201:80
+    environment: 
+      base: "http://localhost"
+      client: "http://localhost:4201"
+    networks: 
       - gateway-network
 
 networks:
