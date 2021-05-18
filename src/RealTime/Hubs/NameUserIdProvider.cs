@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 
@@ -14,8 +15,17 @@ namespace RealTime.Hubs
         }
         public string GetUserId(HubConnectionContext connection)
         {
-            logger.LogInformation(string.Join("\n", connection.User.Claims.Select(c => $"{c.Type}: {c.Value}")));
-            return connection.User?.Claims?.FirstOrDefault(c => c.Type == "sub")?.Value;
+            var context = connection.GetHttpContext();
+            var bearer = context.Request.Headers["Authorization"].ToString();
+            if (string.IsNullOrEmpty(bearer))
+            {
+                return null;
+            }
+            var token = bearer.Split(' ')[1];
+            var handler = new JwtSecurityTokenHandler();
+            var tokenS = handler.ReadToken(token) as JwtSecurityToken;
+            var sub = tokenS.Claims.FirstOrDefault(c => c.Type == "sub").Value;
+            return sub;
         }
     }
 }

@@ -4,6 +4,7 @@ import { verifyToken } from '../utils/verifyToken';
 
 const router = Router();
 
+router.get('/api/banking/users/current', usersApi.currentUser);
 router.get('/api/banking/users/full', usersApi.allUsersFull);
 router.get('/api/banking/users', usersApi.allUsers);
 router.post('/api/banking/users/send',verifyToken, usersApi.sendMoneyFromPayloadUser);

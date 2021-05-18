@@ -1,12 +1,33 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import { Button, Text, View } from 'react-native';
+import * as AuthSession from 'expo-auth-session';
+import * as WebBrowser from 'expo-web-browser';
+
+WebBrowser.maybeCompleteAuthSession();
+
+const useProxy = true;
+
+const redirectUri = AuthSession.makeRedirectUri({
+  useProxy,
+});
 
 export default function App() {
+  const discovery = AuthSession.useAutoDiscovery('https://identity-server-ada.azurewebsites.net/');
+  
+  // Create and load an auth request
+  const [request, result, promptAsync] = AuthSession.useAuthRequest(
+    {
+      clientId: 'mobile-client',
+      redirectUri,
+      scopes: ['openid', 'profile', 'mobile'],
+    },
+    discovery
+  );
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app! Hello</Text>
-      <StatusBar style="auto" />
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Button title="Login!" disabled={!request} onPress={() => promptAsync({ useProxy })} />
+      {result && <Text>{JSON.stringify(result, null, 2)}</Text>}
     </View>
   );
 }

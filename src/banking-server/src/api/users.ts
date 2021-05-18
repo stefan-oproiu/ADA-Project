@@ -15,3 +15,6 @@ export function sendMoneyFromSystem(req:any, res:any, next:any) {
     usersLib.sendMoneyFromSystem(req,res,next);
 }
  
+export function currentUser(req: any, res: any, next: any) {
+    usersLib.currentUser(req,res,next);
+}

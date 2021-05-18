@@ -71,10 +71,12 @@ namespace RealTime
 
                     if (!dict["sourceId"].Equals("SYSTEM"))
                     {
-                        await this.mobileHub.Clients.User((string)dict["sourceId"]).MoneySent(message);
+                        _logger.LogInformation($"Sent money to: {dict["sourceId"]}");
+                        await this.mobileHub.Clients.User(dict["sourceId"].ToString()).MoneySent(message);
                     }
 
-                    await this.mobileHub.Clients.User((string)dict["targetId"]).MoneySent(message);
+                    _logger.LogInformation($"Received money from: {dict["targetId"]}");
+                    await this.mobileHub.Clients.User(dict["targetId"].ToString()).MoneyReceived(message);
                 }
                 catch (AlreadyClosedException)
                 {

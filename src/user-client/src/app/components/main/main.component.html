@@ -1,0 +1,9 @@
+<div class="container">
+    <mat-card *ngFor="let user of users">
+        <span>{{user.fullName}}</span>
+        <a [routerLink]="['/', 'send', user.id]" mat-icon-button>
+            <mat-icon>chevron_right</mat-icon>
+        </a>
+    </mat-card>
+</div>
+

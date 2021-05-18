@@ -8,6 +8,19 @@ import * as sendToRabbitMQ from '../utils/sendToRabbitMQ'
 var _ = require('lodash');
 const randomIdTransaction = require('../utils/generateRandomIdTransaction');
 
+export let currentUser = (req: any, res: any, next) => {
+    let payloadData: any = jwt_decode(req.headers['authorization'].split(' ')[1])
+    const id = payloadData.sub;
+
+    UserTable.find({id}, (err, user) => {
+        if (err) {
+            res.send(404, 'Not found');
+        } else {
+            res.send(200, user[0]);
+        }
+    })
+}
+
 //- GET - //api/banking/users/full # return all users with all transactions
 export let allUsersFull = (req: Request, res: Response) => {
     let users = UserTable.find({}, '-_id -__v', null, function (err: any, users: any) {
@@ -54,8 +67,7 @@ export function sendMoneyFromPayloadUser(req: any, res: any, next: any) {
                     }
                     else {
                         let UserFind = UserTable.find({
-                            id: "" + payloadData.sub,
-                            fullName: payloadData.name
+                            id: "" + payloadData.sub
                         }, function (err: any, sender: any) {
                             if (err) {
                                 res.status(404).json({message: "Problem with loading the payload user", err:err })
@@ -98,7 +110,7 @@ export function sendMoneyFromPayloadUser(req: any, res: any, next: any) {
                                                                 let newSenderBalance =  newUser.balance - transaction.amount;
                                                                 let senderTable = UserTable.findOneAndUpdate({id: newUser.id}, {$set: { balance:newSenderBalance }, $push:{ transactions: transactionTable.id }}, {new: true}, (err, doc) => {
                                                                     if (err) {
-                                                                        res.status(300).json({message:"Sender couldn't be updated", err:err});
+                                                                        res.status(400).json({message:"Sender couldn't be updated", err:err});
                                                                     }
                                                                     else {                                                    
                                                                         res.status(200).json({message: "Transaction succed"})
@@ -110,7 +122,7 @@ export function sendMoneyFromPayloadUser(req: any, res: any, next: any) {
                                                  })
                                             }
                                             else {
-                                                res.status(300).json({message: "Not enough money in the bank account"})
+                                                res.status(400).json({message: "Not enough money in the bank account"})
                                             }
                                         }
                                     })
@@ -136,13 +148,13 @@ export function sendMoneyFromPayloadUser(req: any, res: any, next: any) {
                                                 let newRecieverBalance =  requestUser[0].balance + transaction.amount
                                                 let receiver = UserTable.findOneAndUpdate({id: req.body.targetId},  {$set: { balance:newRecieverBalance }, $push:{ transactions: transactionTable.id }}, {new: true}, (err, doc) => {
                                                     if (err) {
-                                                       res.status(300).json({message: "error on receiver", err:err})
+                                                       res.status(400).json({message: "error on receiver", err:err})
                                                     }
                                                     else {
                                                         let newSenderBalance =  sender[0].balance - transaction.amount;
                                                         let senderTable = UserTable.findOneAndUpdate({id: sender[0].id}, {$set: { balance:newSenderBalance }, $push:{ transactions: transactionTable.id }}, {new: true}, (err, doc) => {
                                                             if (err) {
-                                                                res.status(300).json({message: "error on sender", err:err})
+                                                                res.status(400).json({message: "error on sender", err:err})
                                                             }
                                                             else {
                                                                 res.status(200).json({message: "Transaction succed"})
@@ -154,7 +166,7 @@ export function sendMoneyFromPayloadUser(req: any, res: any, next: any) {
                                         })
                                     }
                                     else {
-                                        res.status(300).json({message: "Not enough money in the bank account"})
+                                        res.status(400).json({message: "Not enough money in the bank account"})
                                     }
                                 }
                             }
@@ -199,7 +211,7 @@ export function sendMoneyFromSystem(req: any, res: any, next: any) {
                 let newRecieverBalance =  requestUser[0].balance + transaction.amount
                 let receiver = UserTable.findOneAndUpdate({id: req.body.targetId},  {$set: { balance:newRecieverBalance }, $push:{ transactions: transactionTable.id }}, {new: true}, (err, doc) => {
                     if (err) {
-                        res.status(300).json({message: "error on receiver", err:err})
+                        res.status(400).json({message: "error on receiver", err:err})
                         }
                         else {
                         res.status(200).json({message: "Transaction succed"})

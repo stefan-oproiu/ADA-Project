@@ -72,6 +72,15 @@ namespace RealTime
 
             app.UseRouting();
 
+            app.Use(async (context, next) =>
+            {
+                var token = context.Request.Query["access_token"];
+                if (!string.IsNullOrEmpty(token))
+                {
+                    context.Request.Headers.Add("Authorization", $"Bearer {token}");
+                }
+                await next();
+            });
             app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>

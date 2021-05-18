@@ -43,16 +43,38 @@ namespace IdentityServer
                 new Client
                 {
                     ClientId = "mobile-client",
-                    ClientSecrets = { new Secret("49C1A7E1-0C79-4A89-A3D6-A37998FB86B0".Sha256()) },
-
+                    ClientName = "Mobile Client",
                     AllowedGrantTypes = GrantTypes.Code,
+                    RequireClientSecret = false,
+                    RequireConsent = false,
+                    AccessTokenLifetime = 600,
+                    RequirePkce = true,
 
-                    RedirectUris = { "https://localhost:44300/signin-oidc" },
-                    FrontChannelLogoutUri = "https://localhost:44300/signout-oidc",
-                    PostLogoutRedirectUris = { "https://localhost:44300/signout-callback-oidc" },
+                    RedirectUris = new List<string> {
+                        "http://192.168.100.8:4201/signin-callback",
+                        "https://192.168.100.8:4201/signin-callback",
+                        "http://localhost:4201/signin-callback",
+                        "https://localhost:4201/signin-callback",
+                    },
+                    PostLogoutRedirectUris = new List<string> {
+                        "http://192.168.100.8:4201/logout-callback",
+                        "https://192.168.100.8:4201/logout-callback",
+                        "http://localhost:4201/logout-callback",
+                        "https://localhost:4201/logout-callback"
+                    },
+                    AllowedCorsOrigins = new List<string> {
+                        "http://192.168.100.8:4201",
+                        "https://192.168.100.8:4201",
+                        "http://localhost:4201",
+                        "https://localhost:4201"
+                    },
 
-                    AllowOfflineAccess = true,
-                    AllowedScopes = { "openid", "profile", "mobile" }
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "mobile"
+                    }
                 },
 
                 new Client

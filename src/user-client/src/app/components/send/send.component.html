@@ -1,0 +1,13 @@
+<div class="container">
+
+    <span *ngIf="user">Current balance: {{user.balance}}</span>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Amount</mat-label>
+        <input type="number" min=0 [formControl]="control" matInput>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" (click)="send()">
+        Send
+    </button>
+</div>
